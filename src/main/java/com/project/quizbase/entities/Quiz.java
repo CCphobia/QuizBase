@@ -1,6 +1,7 @@
 package com.project.quizbase.entities;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -9,17 +10,10 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "quiz")
 public class Quiz implements Serializable {
 
     @EmbeddedId
-    private QuizId id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("user_id")
-    private User creator;
-
-    private String title;
+    QuizId id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Category category;
@@ -28,11 +22,10 @@ public class Quiz implements Serializable {
     private List<Question> questions;
 
     @CreationTimestamp
-    @Column(name = "creation_time")
     private LocalDateTime creationTime;
 
-    public Quiz(String title, Category category, List<Question> questions) {
-        this.title = title;
+    public Quiz(User author, String title, Category category, List<Question> questions) {
+        id = new QuizId(author, title);
         this.category = category;
         this.questions = questions;
     }
@@ -43,24 +36,8 @@ public class Quiz implements Serializable {
         return id;
     }
 
-    public void setId(QuizId idQ) {
-        this.id = idQ;
-    }
-
-    public User getCreator() {
-        return creator;
-    }
-
-    public void setCreator(User creator) {
-        this.creator = creator;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
+    public void setId(QuizId id) {
+        this.id = id;
     }
 
     public Category getCategory() {
@@ -93,8 +70,6 @@ public class Quiz implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         Quiz quiz = (Quiz) o;
         return Objects.equals(id, quiz.id) &&
-                Objects.equals(creator, quiz.creator) &&
-                Objects.equals(title, quiz.title) &&
                 Objects.equals(category, quiz.category) &&
                 Objects.equals(questions, quiz.questions) &&
                 Objects.equals(creationTime, quiz.creationTime);
@@ -102,15 +77,13 @@ public class Quiz implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, creator, title, category, questions, creationTime);
+        return Objects.hash(id, category, questions, creationTime);
     }
 
     @Override
     public String toString() {
         return "Quiz{" +
                 "id=" + id +
-                ", creator=" + creator +
-                ", title='" + title + '\'' +
                 ", category=" + category +
                 ", questions=" + questions +
                 ", creationTime=" + creationTime +
