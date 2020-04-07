@@ -5,7 +5,6 @@ import com.project.quizbase.entities.User;
 import com.project.quizbase.exceptions.EntityAlreadyExistsException;
 import com.project.quizbase.exceptions.NoSuchEntityException;
 import com.project.quizbase.repositories.QuizRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -22,9 +21,9 @@ public class QuizService {
     @Transactional
     public void saveQuiz(QuizDto quizDto) throws EntityAlreadyExistsException{
         String title = quizDto.getTitle();
-        User author = quizDto.getAuthor();
+        User user = quizDto.getAuthor();
 
-        if (quizRepository.existsById_TitleAndId_Author(title, author)) {
+        if (quizRepository.existsById_TitleAndId_User(title, user)) {
             throw new EntityAlreadyExistsException(
                     String.format("Quiz with title %s is already added", title));
         }
@@ -34,12 +33,12 @@ public class QuizService {
     @Transactional
     public void deleteQuiz(QuizDto quizDto) throws NoSuchEntityException{
         String title = quizDto.getTitle();
-        User author = quizDto.getAuthor();
+        User user = quizDto.getAuthor();
 
-        if (!quizRepository.existsById_TitleAndId_Author(title, author)){
+        if (!quizRepository.existsById_TitleAndId_User(title, user)){
             throw new NoSuchEntityException(
                     String.format("Quiz with title %s does not exists", title));
         }
-        quizRepository.deleteByTitleAndAuthor(title, author);
+        quizRepository.deleteByTitleAndAuthor(title, user);
     }
 }

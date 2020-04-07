@@ -9,8 +9,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface QuizRepository extends JpaRepository<Quiz, Long> {
 
-    boolean existsById_TitleAndId_Author(String title, User author);
+    boolean existsById_TitleAndId_User(String title, User user);
 
-    @Query(value = "DELETE FROM quiz WHERE ?1 = title AND ?2 = author", nativeQuery = true)
-    void deleteByTitleAndAuthor(String title, User author);
+    @Query(value = "DELETE FROM quiz WHERE ?1 = title AND ?2 = user", nativeQuery = true)
+    void deleteByTitleAndAuthor(String title, User user);
 }

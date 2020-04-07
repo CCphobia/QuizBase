@@ -5,7 +5,6 @@ import org.hibernate.boot.model.naming.PhysicalNamingStrategy;
 import org.hibernate.engine.jdbc.env.spi.JdbcEnvironment;
 
 public class SnakeCasePhysicalNamingStrategy implements PhysicalNamingStrategy {
-
     @Override
     public Identifier toPhysicalCatalogName(final Identifier identifier, final JdbcEnvironment jdbcEnv) {
         return convertToSnakeCase(identifier);

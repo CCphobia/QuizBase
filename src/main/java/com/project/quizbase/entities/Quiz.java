@@ -1,7 +1,6 @@
 package com.project.quizbase.entities;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -16,16 +15,20 @@ public class Quiz implements Serializable {
     QuizId id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
     private Category category;
 
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY,
+            orphanRemoval = true,
+            cascade = CascadeType.ALL,
+            mappedBy = "quiz")
     private List<Question> questions;
 
     @CreationTimestamp
     private LocalDateTime creationTime;
 
-    public Quiz(User author, String title, Category category, List<Question> questions) {
-        id = new QuizId(author, title);
+    public Quiz(User user, String title, Category category, List<Question> questions) {
+        id = new QuizId(user, title);
         this.category = category;
         this.questions = questions;
     }
@@ -64,20 +67,27 @@ public class Quiz implements Serializable {
         this.creationTime = creationTime;
     }
 
+    public void addQuestion(Question question){
+        questions.add(question);
+        question.setQuiz(this);
+    }
+
+    public void removeQuestion(Question question){
+        questions.remove(question);
+        question.setQuiz(null);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Quiz quiz = (Quiz) o;
-        return Objects.equals(id, quiz.id) &&
-                Objects.equals(category, quiz.category) &&
-                Objects.equals(questions, quiz.questions) &&
-                Objects.equals(creationTime, quiz.creationTime);
+        return getId().equals(quiz.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, category, questions, creationTime);
+        return Objects.hash(getId());
     }
 
     @Override

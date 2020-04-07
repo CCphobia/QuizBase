@@ -1,8 +1,12 @@
 package com.project.quizbase.entities;
 
-import javax.persistence.*;
+import org.hibernate.annotations.NaturalId;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.io.Serializable;
-import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Category implements Serializable {
@@ -11,10 +15,8 @@ public class Category implements Serializable {
     @GeneratedValue
     private Long id;
 
+    @NaturalId
     private String title;
-
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<Quiz> quizzes;
 
     public Category() {}
 
@@ -38,11 +40,24 @@ public class Category implements Serializable {
         this.title = title;
     }
 
-    public List<Quiz> getQuizzes() {
-        return quizzes;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Category category = (Category) o;
+        return getTitle().equals(category.getTitle());
     }
 
-    public void setQuizzes(List<Quiz> quizzes) {
-        this.quizzes = quizzes;
+    @Override
+    public int hashCode() {
+        return Objects.hash(getTitle());
+    }
+
+    @Override
+    public String toString() {
+        return "Category{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                '}';
     }
 }

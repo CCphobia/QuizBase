@@ -1,8 +1,11 @@
 package com.project.quizbase.entities;
 
+import org.hibernate.annotations.NaturalId;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -13,6 +16,7 @@ public class User implements Serializable {
     @GeneratedValue
     private Long id;
 
+    @NaturalId
     private String login;
 
     @Email
@@ -20,17 +24,27 @@ public class User implements Serializable {
 
     private String password;
 
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(fetch = FetchType.LAZY,
+            orphanRemoval = true,
+            cascade = CascadeType.ALL,
+            mappedBy = "id.user"
+            )
     private List<Quiz> quizzesAdded;
 
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(fetch = FetchType.LAZY,
+            orphanRemoval = true,
+            cascade = CascadeType.ALL,
+            mappedBy = "user")
     private List<Game> gamesPlayed;
 
     public User() {}
 
-    public User(String login, String password){
+    public User(String login, String email, String password){
         this.login = login;
+        this.email = email;
         this.password = password;
+        quizzesAdded = new ArrayList<>();
+        gamesPlayed = new ArrayList<>();
     }
 
     public Long getId() {
@@ -81,22 +95,36 @@ public class User implements Serializable {
         this.gamesPlayed = gamesPlayed;
     }
 
+    public void addQuiz(Quiz quiz){
+        quizzesAdded.add(quiz);
+        quiz.getId().setUser(this);
+    }
+
+    public void removeQuiz(Quiz quiz){
+        quizzesAdded.remove(quiz);
+        quiz.getId().setUser(null);
+    }
+
+    public void addGamePlayed(Game game){
+        gamesPlayed.add(game);
+        game.setUser(this);
+    }
+    public void removeGamePlayed(Game game){
+        gamesPlayed.remove(game);
+        game.setUser(null);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) &&
-                Objects.equals(login, user.login) &&
-                Objects.equals(email, user.email) &&
-                Objects.equals(password, user.password) &&
-                Objects.equals(quizzesAdded, user.quizzesAdded) &&
-                Objects.equals(gamesPlayed, user.gamesPlayed);
+        return getLogin().equals(user.getLogin());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, login, email, password, quizzesAdded, gamesPlayed);
+        return Objects.hash(getLogin());
     }
 
     @Override

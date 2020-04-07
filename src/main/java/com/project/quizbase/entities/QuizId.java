@@ -8,24 +8,25 @@ import java.util.Objects;
 public class QuizId implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     @MapsId
-    private User author;
+    private User user;
 
     private String title;
 
     public QuizId() {}
 
-    public QuizId(User author, String title) {
-        this.author = author;
+    public QuizId(User user, String title) {
+        this.user = user;
         this.title = title;
     }
 
-    public User getAuthor() {
-        return author;
+    public User getUser() {
+        return user;
     }
 
-    public void setAuthor(User author) {
-        this.author = author;
+    public void setUser(User author) {
+        this.user = author;
     }
 
     public String getTitle() {
@@ -41,19 +42,19 @@ public class QuizId implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         QuizId quizId = (QuizId) o;
-        return Objects.equals(author, quizId.author) &&
+        return Objects.equals(user, quizId.user) &&
                 Objects.equals(title, quizId.title);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(author, title);
+        return Objects.hash(user, title);
     }
 
     @Override
     public String toString() {
         return "QuizId{" +
-                "author=" + author +
+                "author=" + user +
                 ", title='" + title + '\'' +
                 '}';
     }

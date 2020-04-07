@@ -2,7 +2,6 @@ package com.project.quizbase.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Objects;
 
 @Entity
 public class Game implements Serializable {
@@ -12,21 +11,24 @@ public class Game implements Serializable {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private User player;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumns({
+            @JoinColumn(name = "user_id", insertable = false, updatable = false),
+            @JoinColumn(name = "quiz_title", insertable = false, updatable = false)
+    })
     private Quiz quiz;
 
-    @Column(name = "player_score")
-    private Integer playerScore;
+    private Integer userScore;
 
-    @Column(name = "maximum_score")
     private Integer maximumScore;
 
     public Game() {}
 
-    public Game(User player, Quiz quiz){
-        this.player = player;
+    public Game(User user, Quiz quiz){
+        this.user = user;
         this.quiz = quiz;
         this.maximumScore = quiz.getQuestions().size();
     }
@@ -39,12 +41,12 @@ public class Game implements Serializable {
         this.id = id;
     }
 
-    public User getPlayer() {
-        return player;
+    public User getUser() {
+        return user;
     }
 
-    public void setPlayer(User player) {
-        this.player = player;
+    public void setUser(User player) {
+        this.user = player;
     }
 
     public Quiz getQuiz() {
@@ -55,12 +57,12 @@ public class Game implements Serializable {
         this.quiz = quiz;
     }
 
-    public Integer getPlayerScore() {
-        return playerScore;
+    public Integer getUserScore() {
+        return userScore;
     }
 
-    public void setPlayerScore(Integer playerScore) {
-        this.playerScore = playerScore;
+    public void setUserScore(Integer playerScore) {
+        this.userScore = playerScore;
     }
 
     public Integer getMaximumScore() {
@@ -71,30 +73,15 @@ public class Game implements Serializable {
         this.maximumScore = maximumScore;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Game game = (Game) o;
-        return Objects.equals(id, game.id) &&
-                Objects.equals(player, game.player) &&
-                Objects.equals(quiz, game.quiz) &&
-                Objects.equals(playerScore, game.playerScore) &&
-                Objects.equals(maximumScore, game.maximumScore);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, player, quiz, playerScore, maximumScore);
-    }
+  
 
     @Override
     public String toString() {
         return "Game{" +
                 "id=" + id +
-                ", player=" + player +
+                ", player=" + user +
                 ", quiz=" + quiz +
-                ", playerScore=" + playerScore +
+                ", playerScore=" + userScore +
                 ", maximumScore=" + maximumScore +
                 '}';
     }
