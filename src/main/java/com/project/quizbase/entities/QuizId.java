@@ -9,7 +9,6 @@ public class QuizId implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    @MapsId
     private User user;
 
     private String title;

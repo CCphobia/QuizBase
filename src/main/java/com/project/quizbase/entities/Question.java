@@ -12,6 +12,7 @@ public class Question implements Serializable {
     @GeneratedValue
     private Long id;
 
+    @Lob
     private String body;
 
     @ElementCollection
@@ -23,9 +24,9 @@ public class Question implements Serializable {
     private String correctAnswer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @PrimaryKeyJoinColumns(value = {
-            @PrimaryKeyJoinColumn(name = "user_id"),
-            @PrimaryKeyJoinColumn(name = "quiz_title")
+    @JoinColumns(value = {
+            @JoinColumn(name = "quiz_title"),
+            @JoinColumn(name = "user_id")
     })
     private Quiz quiz;
 

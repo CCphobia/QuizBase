@@ -23,7 +23,7 @@ public class QuizService {
         String title = quizDto.getTitle();
         User user = quizDto.getAuthor();
 
-        if (quizRepository.existsById_TitleAndId_User(title, user)) {
+        if (quizRepository.existsById_UserAndId_Title(user, title)) {
             throw new EntityAlreadyExistsException(
                     String.format("Quiz with title %s is already added", title));
         }
@@ -35,7 +35,7 @@ public class QuizService {
         String title = quizDto.getTitle();
         User user = quizDto.getAuthor();
 
-        if (!quizRepository.existsById_TitleAndId_User(title, user)){
+        if (!quizRepository.existsById_UserAndId_Title(user, title)){
             throw new NoSuchEntityException(
                     String.format("Quiz with title %s does not exists", title));
         }
